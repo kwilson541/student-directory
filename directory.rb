@@ -23,9 +23,11 @@ def print_header
 end
 
 def print(students)
-  students.each_with_index { |student, num|
-    puts "#{num + 1} #{student[:name]} (#{student[:cohort]} cohort)"
-	}
+  count = 0
+  until count == students.length
+    puts "#{students[count][:name]} (#{students[count][:cohort]} cohort)"
+    count += 1
+  end
 end
 
 def print_footer(students)
@@ -63,4 +65,3 @@ students = input_students
 print_header
 print(students)
 print_footer(students)
-print_shorter_than_12(students)
