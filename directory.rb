@@ -31,8 +31,28 @@ end
 def print_footer(students)
   puts "Overall, we have #{students.count} great students"
 end
+
+# Gets a specific letter from the User
+def input_letter
+  puts "Please enter a letter"
+  puts "Only students names that begin with this letter will be displayed"
+
+  specific_letter = gets.chomp
+end
+
+# Only prints students names if they begin with a specific letter
+def print_specific_letter(students, specific_letter)
+  students.each { |student|
+    if student[:name].chars.first == specific_letter
+      puts "#{student[:name]} (#{student[:cohort]} cohort)"
+    end
+  }
+end
+
 # Nothing happens until we call the methods
 students = input_students
 print_header
 print(students)
 print_footer(students)
+specific_letter = input_letter
+print_specific_letter(students, specific_letter)
