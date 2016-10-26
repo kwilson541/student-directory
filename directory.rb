@@ -43,10 +43,19 @@ end
 # Only prints students names if they begin with a specific letter
 def print_specific_letter(students, specific_letter)
   students.each { |student|
-    if student[:name].chars.first == specific_letter
+    if student[:name].chars.first.downcase == specific_letter.downcase
       puts "#{student[:name]} (#{student[:cohort]} cohort)"
     end
   }
+end
+
+# Only prints student names if they are shorter than 12 characters
+def print_shorter_than_12(students)
+  students.each { |student|
+    if student[:name].length < 12
+      puts "#{student[:name]} (#{student[:cohort]} cohort)"
+    end
+    }
 end
 
 # Nothing happens until we call the methods
@@ -54,5 +63,4 @@ students = input_students
 print_header
 print(students)
 print_footer(students)
-specific_letter = input_letter
-print_specific_letter(students, specific_letter)
+print_shorter_than_12(students)
