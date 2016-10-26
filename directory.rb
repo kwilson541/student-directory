@@ -62,7 +62,7 @@ end
 def print_specific_letter(students, specific_letter)
   students.each { |student|
     if student[:name].chars.first.downcase == specific_letter.downcase
-      puts "#{student[:name]} (#{student[:cohort]} cohort)"
+      puts "#{students[:name]} (#{students[:cohort]} cohort)"
     end
   }
 end
@@ -71,13 +71,29 @@ end
 def print_shorter_than_12(students)
   students.each { |student|
     if student[:name].length < 12
-      puts "#{student[:name]} (#{student[:cohort]} cohort)"
+      puts "#{students[:name]} (#{students[:cohort]} cohort)"
     end
     }
+end
+
+# Prints students organised by Cohort
+def print_by_cohort(students)
+ cohorts = students.map { |students| students[:cohort] }
+ puts "You have students from the following cohorts:"
+ cohorts.each { |cohort| cohort.to_s
+  puts "#{cohort}"
+  }
+  puts "Which cohort would you like to display:"
+  cohort_input = gets.chomp.capitalize.to_sym
+  students.each { |student|
+    if student[:cohort] == cohort_input
+    puts "Name: #{student[:name]}, Origin: #{student[:origin]}, DOB: #{student[:dob]}"
+  end
+}
 end
 
 # Nothing happens until we call the methods
 students = input_students
 print_header
-print(students)
+print_by_cohort(students)
 print_footer(students)
