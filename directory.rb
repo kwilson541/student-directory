@@ -47,7 +47,11 @@ def print(students)
 end
 
 def print_footer(students)
-  puts "Overall, we have #{students.count} great students"
+  sgpl = "students"
+  if students.count == 1
+    sgpl = "student"
+  end
+  puts "Overall, we have #{students.count} great #{sgpl}"
 end
 
 # Gets a specific letter from the User
@@ -95,5 +99,5 @@ end
 # Nothing happens until we call the methods
 students = input_students
 print_header
-print_by_cohort(students)
+print(students)
 print_footer(students)
