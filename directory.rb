@@ -1,9 +1,42 @@
+def interactive_menu
+  # An empty array accessible to all methods
+  @students = []
+  loop do
+    print_menu
+    # Read the input and save it into a variable
+    selection = gets.chomp
+    # 3. Do what the user has asked
+    case selection
+    when "1"
+      students = input_students
+    when "2"
+      show_students
+    when "9"
+      exit # This will cause the program to terminate
+    else
+      puts "I don't know what you meant, try again"
+    end
+  end
+end
+
+def print_menu
+  # Print the menu and ask the user what to do
+  puts "1. Input the students"
+  puts "2. Show the students"
+  # 9 Because we'll be adding more items
+  puts "9. Exit"
+end
+
+def show_students
+  print_header
+  print
+  print_footer
+end
+
 def input_students
   puts "Please enter the details of the students"
   puts "To finish, just hit return twice"
   puts "Student name:"
-
-  students = []
 
   name = gets.chomp
 
@@ -23,36 +56,42 @@ def input_students
     puts "#{name}'s date of birth (DD/MM/YYYY):"
     dob = gets.chomp
     # Add the student hash to the array
-    students << {name: name, cohort: cohort, origin: origin, dob: dob}
-    puts "Now we have #{students.count} students"
+    @students << {name: name, cohort: cohort, origin: origin, dob: dob}
+    puts "Now we have #{@students.count} students"
     # Get another name from the user
     puts "Please enter the details of next student"
     puts "Student name:"
     name = gets.chomp
   end
 
-  students
+  @students
 end
 
 def print_header
+  if @students.count > 0
   puts "The students of Villains Academy"
   puts "-------------".center(30)
+  end
 end
 
-def print(students)
+def print
   count = 0
-  until count == students.length
-    puts "Name: #{students[count][:name]}, Origin: #{students[count][:origin]}, DOB: #{students[count][:dob]}, Cohort: #{students[count][:cohort]}"
+  until count == @students.length
+    puts "Name: #{@students[count][:name]}, Origin: #{@students[count][:origin]}, DOB: #{@students[count][:dob]}, Cohort: #{@students[count][:cohort]}"
     count += 1
   end
 end
 
-def print_footer(students)
+def print_footer
   sgpl = "students"
-  if students.count == 1
+  if @students.count == 1
     sgpl = "student"
   end
-  puts "Overall, we have #{students.count} great #{sgpl}"
+  if @students.count > 0
+  puts "Overall, we have #{@students.count} great #{sgpl}"
+  else
+  puts "You have no students!"
+  end
 end
 
 # Gets a specific letter from the User
@@ -60,45 +99,42 @@ def input_letter
   puts "Please enter a letter"
   puts "Only students names that begin with this letter will be displayed"
 
-  specific_letter = gets.chomp
+  @specific_letter = gets.chomp
 end
 
 # Only prints students names if they begin with a specific letter
-def print_specific_letter(students, specific_letter)
-  students.each { |student|
-    if student[:name].chars.first.downcase == specific_letter.downcase
-      puts "#{students[:name]} (#{students[:cohort]} cohort)"
+def print_specific_letter
+  @students.each { |student|
+    if student[:name].chars.first.downcase == @specific_letter.downcase
+      puts "#{@students[:name]} (#{@students[:cohort]} cohort)"
     end
   }
 end
 
 # Only prints student names if they are shorter than 12 characters
-def print_shorter_than_12(students)
-  students.each { |student|
+def print_shorter_than_12
+  @students.each { |student|
     if student[:name].length < 12
-      puts "#{students[:name]} (#{students[:cohort]} cohort)"
+      puts "#{@students[:name]} (#{@students[:cohort]} cohort)"
     end
     }
 end
 
 # Prints students organised by Cohort
-def print_by_cohort(students)
- cohorts = students.map { |students| students[:cohort] }
+def print_by_cohort
+ cohorts = @students.map { |students| students[:cohort] }
  puts "You have students from the following cohorts:"
  cohorts.each { |cohort| cohort.to_s
   puts "#{cohort}"
   }
   puts "Which cohort would you like to display:"
   cohort_input = gets.chomp.capitalize.to_sym
-  students.each { |student|
+  @students.each { |student|
     if student[:cohort] == cohort_input
-    puts "Name: #{student[:name]}, Origin: #{student[:origin]}, DOB: #{student[:dob]}"
+    puts "Name: #{@student[:name]}, Origin: #{@student[:origin]}, DOB: #{@student[:dob]}"
   end
 }
 end
 
 # Nothing happens until we call the methods
-students = input_students
-print_header
-print(students)
-print_footer(students)
+interactive_menu
