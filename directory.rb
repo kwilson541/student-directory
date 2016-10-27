@@ -4,7 +4,7 @@
 def interactive_menu
   loop do
     print_menu
-    process(gets.chomp)
+    process(STDIN.gets.chomp)
   end
 end
 
@@ -13,6 +13,7 @@ def print_menu
   puts "1. Input the students"
   puts "2. Show the students"
   puts "3. Save the student list to students.csv"
+  puts "4. Load the list of students from students.csv"
   # 9 Because we'll be adding more items
   puts "9. Exit"
 end
@@ -31,6 +32,8 @@ def process(selection)
       show_students
     when "3"
       save_students
+    when "4"
+      load_students
     when "9"
       exit # This will cause the program to terminate
     else
@@ -50,35 +53,61 @@ def save_students
   file.close
 end
 
+def load_students(filename = "students.csv")
+  file = File.open(filename, "r")
+  file.readlines.each do |line|
+  name, cohort, origin, dob = line.chomp.split(',')
+    @students << {name: name, cohort: cohort.to_sym, origin: origin, dob: dob}
+  end
+  file.close
+end
+
+def try_load_students
+  #First argument from the command line
+  filename = ARGV.first
+  # Get out of the method if it isn't given
+  return if filename.nil?
+  # If it exists
+  if File.exists?(filename)
+    load_students(filename)
+     puts "Loaded #{@students.count} from #{filename}"
+  #If it doesn't exist
+  else
+    puts "Sorry, #{filename} doesn't exist."
+    # Quit the program
+    exit
+  end
+end
+
 def input_students
   puts "Please enter the details of the students"
   puts "To finish, just hit return twice"
   puts "Student name:"
 
-  name = gets.chomp
+  name = STDIN.gets.chomp
 
   months = [:January, :February, :March, :April, :May, :June, :July, :August, :September, :October, :November, :December]
 
   while !name.empty? do
     puts "#{name}'s cohort:"
-    cohort = gets.chomp.capitalize.to_sym
+    cohort = STDIN.gets.chomp.capitalize.to_sym
     cohort = :November if cohort.empty?
     until months.include? cohort
       puts "Please enter a valid month"
-      cohort = gets.chomp.capitalize.to_sym
+      cohort = STDIN.gets.chomp.capitalize.to_sym
     end
     puts "#{name}'s origin:"
     # .chop used as an alternative to .chomp
-    origin = gets.chop
+    origin = STDIN.gets.chop
     puts "#{name}'s date of birth (DD/MM/YYYY):"
-    dob = gets.chomp
+    dob = STDIN.gets.chomp
     # Add the student hash to the array
     @students << {name: name, cohort: cohort, origin: origin, dob: dob}
     puts "Now we have #{@students.count} students"
     # Get another name from the user
     puts "Please enter the details of next student"
     puts "Student name:"
-    name = gets.chomp
+    name = STDIN.gets.chomp
   end
 
   @students
@@ -116,7 +145,7 @@ def input_letter
   puts "Please enter a letter"
   puts "Only students names that begin with this letter will be displayed"
 
-  @specific_letter = gets.chomp
+  @specific_letter = STDIN.gets.chomp
 end
 
 # Only prints students names if they begin with a specific letter
@@ -145,7 +174,7 @@ def print_by_cohort
   puts "#{cohort}"
   }
   puts "Which cohort would you like to display:"
-  cohort_input = gets.chomp.capitalize.to_sym
+  cohort_input = STDIN.gets.chomp.capitalize.to_sym
   @students.each { |student|
     if student[:cohort] == cohort_input
     puts "Name: #{student[:name]}, Origin: #{student[:origin]}, DOB: #{student[:dob]}"
@@ -154,4 +183,5 @@ def print_by_cohort
 end
 
 # Nothing happens until we call the methods
+try_load_students
 interactive_menu
