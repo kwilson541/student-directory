@@ -56,8 +56,8 @@ end
 def load_students(filename = "students.csv")
   file = File.open(filename, "r")
   file.readlines.each do |line|
-  name, cohort, origin, dob = line.chomp.split(',')
-    @students << {name: name, cohort: cohort.to_sym, origin: origin, dob: dob}
+  @name, @cohort, @origin, @dob = line.chomp.split(',')
+    add_student
   end
   file.close
 end
@@ -66,9 +66,11 @@ def try_load_students
   #First argument from the command line
   filename = ARGV.first
   # Get out of the method if it isn't given
-  return if filename.nil?
+  if filename.nil?
+    load_students("students.csv")
+    puts "No filename entered, loaded students.csv"
   # If it exists
-  if File.exists?(filename)
+  elsif File.exists?(filename)
     load_students(filename)
      puts "Loaded #{@students.count} from #{filename}"
   #If it doesn't exist
@@ -79,35 +81,39 @@ def try_load_students
   end
 end
 
+def add_student
+  @students << {name: @name, cohort: @cohort.to_sym, origin: @origin, dob: @dob}
+end
+
 def input_students
   puts "Please enter the details of the students"
   puts "To finish, just hit return twice"
   puts "Student name:"
 
-  name = STDIN.gets.chomp
+  @name = STDIN.gets.chomp
 
   months = [:January, :February, :March, :April, :May, :June, :July, :August, :September, :October, :November, :December]
 
-  while !name.empty? do
-    puts "#{name}'s cohort:"
-    cohort = STDIN.gets.chomp.capitalize.to_sym
-    cohort = :November if cohort.empty?
-    until months.include? cohort
+  while !@name.empty? do
+    puts "#{@name}'s cohort:"
+    @cohort = STDIN.gets.chomp.capitalize.to_sym
+    @cohort = :November if @cohort.empty?
+    until months.include? @cohort
       puts "Please enter a valid month"
-      cohort = STDIN.gets.chomp.capitalize.to_sym
+      @cohort = STDIN.gets.chomp.capitalize.to_sym
     end
-    puts "#{name}'s origin:"
+    puts "#{@name}'s origin:"
     # .chop used as an alternative to .chomp
-    origin = STDIN.gets.chop
-    puts "#{name}'s date of birth (DD/MM/YYYY):"
-    dob = STDIN.gets.chomp
+    @origin = STDIN.gets.chop
+    puts "#{@name}'s date of birth (DD/MM/YYYY):"
+    @dob = STDIN.gets.chomp
     # Add the student hash to the array
-    @students << {name: name, cohort: cohort, origin: origin, dob: dob}
+    add_student
     puts "Now we have #{@students.count} students"
     # Get another name from the user
     puts "Please enter the details of next student"
     puts "Student name:"
-    name = STDIN.gets.chomp
+    @name = STDIN.gets.chomp
   end
 
   @students
