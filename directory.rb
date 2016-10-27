@@ -18,7 +18,8 @@ def input_students
       cohort = gets.chomp.capitalize.to_sym
     end
     puts "#{name}'s origin:"
-    origin = gets.chomp
+    # .chop used as an alternative to .chomp
+    origin = gets.chop
     puts "#{name}'s date of birth (DD/MM/YYYY):"
     dob = gets.chomp
     # Add the student hash to the array
