@@ -1,6 +1,8 @@
-# An empty array accessible to all methods
+# Arrays accessible to all methods
 @students = []
+@months = [:January, :February, :March, :April, :May, :June, :July, :August, :September, :October, :November, :December]
 
+# Interactive menu available when program is run
 def interactive_menu
   loop do
     print_menu
@@ -18,12 +20,14 @@ def print_menu
   puts "9. Exit"
 end
 
+# Display details of all available students, formatted with header and footer
 def show_students
   print_header
   print_students_list
   print_footer
 end
 
+# Interactive menu options
 def process(selection)
   case selection
     when "1"
@@ -41,6 +45,7 @@ def process(selection)
   end
 end
 
+# Allows user to save inputted student information to file
 def save_students
   # open the file for writing
   file = File.open("students.csv", "w")
@@ -53,8 +58,10 @@ def save_students
   file.close
 end
 
+# Loads a student list, default file is students.csv
 def load_students(filename = "students.csv")
   file = File.open(filename, "r")
+  # Takes each line of the file, splits the student info, and converts to variables
   file.readlines.each do |line|
   @name, @cohort, @origin, @dob = line.chomp.split(',')
     add_student
@@ -62,6 +69,7 @@ def load_students(filename = "students.csv")
   file.close
 end
 
+# Loads a list of students from file
 def try_load_students
   #First argument from the command line
   filename = ARGV.first
@@ -81,6 +89,7 @@ def try_load_students
   end
 end
 
+# Takes student variables and puts them into a hash, which is added to the students array
 def add_student
   @students << {name: @name, cohort: @cohort.to_sym, origin: @origin, dob: @dob}
 end
@@ -90,23 +99,19 @@ def input_students
   puts "To finish, just hit return twice"
   puts "Student name:"
 
+  gather_student_data
+
+  @students
+end
+
+# Gathers student information, which is input by the user
+def gather_student_data
   @name = STDIN.gets.chomp
-
-  months = [:January, :February, :March, :April, :May, :June, :July, :August, :September, :October, :November, :December]
-
+  # If a name is entered, gets student cohort, origin and dob, then offers to input next student
   while !@name.empty? do
-    puts "#{@name}'s cohort:"
-    @cohort = STDIN.gets.chomp.capitalize.to_sym
-    @cohort = :November if @cohort.empty?
-    until months.include? @cohort
-      puts "Please enter a valid month"
-      @cohort = STDIN.gets.chomp.capitalize.to_sym
-    end
-    puts "#{@name}'s origin:"
-    # .chop used as an alternative to .chomp
-    @origin = STDIN.gets.chop
-    puts "#{@name}'s date of birth (DD/MM/YYYY):"
-    @dob = STDIN.gets.chomp
+    gather_cohort
+    gather_origin
+    gather_dob
     # Add the student hash to the array
     add_student
     puts "Now we have #{@students.count} students"
@@ -115,11 +120,33 @@ def input_students
     puts "Student name:"
     @name = STDIN.gets.chomp
   end
+end
 
-  @students
+# Gathers student cohort, a valid month must be entered
+def gather_cohort
+  puts "#{@name}'s cohort:"
+    @cohort = STDIN.gets.chomp.capitalize.to_sym
+    @cohort = :November if @cohort.empty?
+    until @months.include? @cohort
+      puts "Please enter a valid month"
+      @cohort = STDIN.gets.chomp.capitalize.to_sym
+    end
+end
+
+# Gathers student origin
+def gather_origin
+  puts "#{@name}'s origin:"
+  @origin = STDIN.gets.chomp
+end
+
+# Gathers student dob
+def gather_dob
+  puts "#{@name}'s date of birth (DD/MM/YYYY):"
+  @dob = STDIN.gets.chomp
 end
 
 def print_header
+  # Prints the header, if there are any students to display
   if @students.count > 0
   puts "The students of Villains Academy"
   puts "-------------".center(30)
@@ -127,6 +154,7 @@ def print_header
 end
  
 def print_students_list
+  # Prints the list of students and their information
   count = 0
   until count == @students.length
     puts "Name: #{@students[count][:name]}, Origin: #{@students[count][:origin]}, DOB: #{@students[count][:dob]}, Cohort: #{@students[count][:cohort]}"
@@ -135,6 +163,7 @@ def print_students_list
 end
 
 def print_footer
+  # Determines whether student(s) sho@ld be singular or plural
   sgpl = "students"
   if @students.count == 1
     sgpl = "student"
