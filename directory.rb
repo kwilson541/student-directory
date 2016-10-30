@@ -1,3 +1,4 @@
+require 'csv'
 # Arrays accessible to all methods
 @students = []
 @months = [:January, :February, :March, :April, :May, :June, :July, :August, :September, :October, :November, :December]
@@ -81,28 +82,25 @@ def choose_file
   end
 end
 
+
+
 # Allows user to save inputted student information to file
 def save_students
   # open the file for writing
-  File.open(@filename, "w"){ |file|
-  # iterate over the array of students
+CSV.open(@filename, "w") { |file|
   @students.each { |student|
     student_data = [student[:name], student[:cohort], student[:origin], student[:dob]]
-    csv_line = student_data.join(",")
-    file.puts csv_line
+    file << student_data
     }
   }
 end
 
 # Loads a student list, default file is students.csv
 def load_students
-  file = File.open(@filename, "r")
-  # Takes each line of the file, splits the student info, and converts to variables
-  file.readlines.each do |line|
-  @name, @cohort, @origin, @dob = line.chomp.split(',')
+  CSV.foreach(@filename) { |line|
+  @name, @cohort, @origin, @dob = line
     add_student
-  end
-  file.close
+  }
 end
 
 # Loads a list of students from file
