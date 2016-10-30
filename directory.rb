@@ -15,8 +15,11 @@ def print_menu
   # Print the menu and ask the user what to do
   puts "1. Input the students"
   puts "2. Show the students"
-  puts "3. Save the student list to students.csv"
-  puts "4. Load the list of students from students.csv"
+  puts "3. Save the list of students"
+  puts "4. Load additional list of students"
+  puts "5. Display students from specified cohort"
+  puts "6. Display student names shorter than 12 characters"
+  puts "7. Display students with specified first initial"
   # 9 Because we'll be adding more items
   puts "9. Exit"
 end
@@ -45,6 +48,15 @@ def process(selection)
       choose_file
       load_students
       puts "Student list loaded"
+    when "5"
+      puts "Choosing students by cohort..."
+      print_by_cohort
+    when "6"
+      puts "Displaying student names shorter than 12 characters..."
+      print_shorter_than_12
+    when "7"
+      puts "Displaying students by first initial..."
+      print_specific_letter
     when "9"
       puts "Exiting program"
       exit # This will cause the program to terminate
@@ -53,6 +65,7 @@ def process(selection)
   end
 end
 
+#Allows user to choose which file they wish to access
 def choose_file
   puts "Please specify a file name"
   puts "If no file name is specified, students.csv will be used by default"
@@ -60,7 +73,6 @@ def choose_file
 
   if file.empty?
     @filename = "students.csv"
-  # If it exists
   elsif File.exists?(file)
     @filename = file
   else
@@ -210,9 +222,10 @@ end
 
 # Only prints students names if they begin with a specific letter
 def print_specific_letter
+  input_letter
   @students.each { |student|
     if student[:name].chars.first.downcase == @specific_letter.downcase
-      puts "#{@students[:name]} (#{@students[:cohort]} cohort)"
+      puts "#{student[:name]} (#{student[:cohort]} cohort)"
     end
   }
 end
@@ -221,7 +234,7 @@ end
 def print_shorter_than_12
   @students.each { |student|
     if student[:name].length < 12
-      puts "#{@students[:name]} (#{@students[:cohort]} cohort)"
+      puts "#{student[:name]} (#{student[:cohort]} cohort)"
     end
     }
 end
