@@ -84,14 +84,14 @@ end
 # Allows user to save inputted student information to file
 def save_students
   # open the file for writing
-  file = File.open(@filename, "w")
+  File.open(@filename, "w"){ |file|
   # iterate over the array of students
   @students.each { |student|
     student_data = [student[:name], student[:cohort], student[:origin], student[:dob]]
     csv_line = student_data.join(",")
     file.puts csv_line
+    }
   }
-  file.close
 end
 
 # Loads a student list, default file is students.csv
