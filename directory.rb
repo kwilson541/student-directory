@@ -1,6 +1,7 @@
 # Arrays accessible to all methods
 @students = []
 @months = [:January, :February, :March, :April, :May, :June, :July, :August, :September, :October, :November, :December]
+@filename = "students.csv"
 
 # Interactive menu available when program is run
 def interactive_menu
@@ -37,9 +38,11 @@ def process(selection)
       puts "Displaying students..."
       show_students
     when "3"
+      choose_file
       save_students
       puts "Students saved"
     when "4"
+      choose_file
       load_students
       puts "Student list loaded"
     when "9"
@@ -50,10 +53,26 @@ def process(selection)
   end
 end
 
+def choose_file
+  puts "Please specify a file name"
+  puts "If no file name is specified, students.csv will be used by default"
+  file = gets.chomp
+
+  if file.empty?
+    @filename = "students.csv"
+  # If it exists
+  elsif File.exists?(file)
+    @filename = file
+  else
+    puts "Sorry, #{file} does not exist."
+    choose_file
+  end
+end
+
 # Allows user to save inputted student information to file
 def save_students
   # open the file for writing
-  file = File.open("students.csv", "w")
+  file = File.open(@filename, "w")
   # iterate over the array of students
   @students.each { |student|
     student_data = [student[:name], student[:cohort], student[:origin], student[:dob]]
@@ -64,8 +83,8 @@ def save_students
 end
 
 # Loads a student list, default file is students.csv
-def load_students(filename = "students.csv")
-  file = File.open(filename, "r")
+def load_students
+  file = File.open(@filename, "r")
   # Takes each line of the file, splits the student info, and converts to variables
   file.readlines.each do |line|
   @name, @cohort, @origin, @dob = line.chomp.split(',')
@@ -80,11 +99,12 @@ def try_load_students
   filename = ARGV.first
   # Get out of the method if it isn't given
   if filename.nil?
-    load_students("students.csv")
+    load_students
     puts "No filename entered, loaded students.csv"
   # If it exists
   elsif File.exists?(filename)
-    load_students(filename)
+    @filename = filename
+    load_students
      puts "Loaded #{@students.count} from #{filename}"
   #If it doesn't exist
   else
